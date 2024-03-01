@@ -54,8 +54,11 @@ def Caso3(nombreFichero):
     '''
     Calcula el sumatorio de distancias recorridas por cada coche
     según el campo distacia del fichero de datos.
+
+    @param nombreFichero Nombre del fichero a leer
     
     '''
+    
     with open(nombreFichero, newline = '') as archivoCsv:
         lectorCsv = csv.reader(archivoCsv)
 
@@ -64,20 +67,26 @@ def Caso3(nombreFichero):
 
         # Guardamos los datos de cada matricula y la distancia recorrida en su posición anterior
         dictMatriculaDistancia = dict()
-    
+        dictMatriculaDistancia["vehiculos"] = {}
+
         # Iteramos las filas, guardando el acumulado de distancia por vehículo
         for fila in lectorCsv:
+                
             matricula = fila[0]
             distancia = float(fila[3])
 
-            if matricula in dictMatriculaDistancia:
-                dictMatriculaDistancia[matricula] = dictMatriculaDistancia[matricula] + distancia
+            if matricula in dictMatriculaDistancia["vehiculos"]:
+                dictMatriculaDistancia["vehiculos"][matricula].append(distancia)
             else:
-                dictMatriculaDistancia[matricula] = distancia
+                dictMatriculaDistancia["vehiculos"][matricula] = list()
+                dictMatriculaDistancia["vehiculos"][matricula].append(distancia)
 
         # Iteramos el diccionario e imprimimos el datos de la distancia de cada matricula:
-        for matricula in dictMatriculaDistancia:
-            print(f"El vehículo con la matricula: {matricula}, ha recorrido {str(dictMatriculaDistancia[matricula])} unidades de distancia")
+        for matricula in dictMatriculaDistancia["vehiculos"]:
+            sumaDistancia = sum (dictMatriculaDistancia["vehiculos"][matricula])
+            print(f"El vehículo con la matricula: {matricula}, ha recorrido {str(sumaDistancia)} unidades de distancia")
+
+
 def main():
     nombreFichero = 'reto.csv'
     Caso3(nombreFichero)
