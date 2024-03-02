@@ -2,8 +2,10 @@ import csv
 import json
 import math
 from haversine import haversine, Unit
-
+import datetime
 import pandas as pd
+
+
 def Caso1(nombreFichero):
     '''
     Ejecuta el caso 1, lee el fichero reto.csv,
@@ -110,6 +112,7 @@ def Caso4(nombreFichero):
     Calcula la distancia recorrida por cada vehículo en función de las coordenadas 
     de cada posición.
     
+    @param nombreFichero Nombre del fichero a utilizar
     '''
     # Lee el archivo CSV
     df = pd.read_csv(nombreFichero, skiprows=1)
@@ -152,10 +155,50 @@ def Caso4(nombreFichero):
         distCoche = 0
 
 
+def ConvertirMilisegundoFechaHora(milisegundos):
+    # Divide los milisegundos por 1000 para obtener segundos
+    segundos = milisegundos / 1000
+    
+    # Utiliza la función datetime.utcfromtimestamp() para crear un objeto datetime
+    fecha_hora = datetime.datetime.utcfromtimestamp(segundos)
+    
+    # Formatea la fecha y hora según tu preferencia (dd/mm/YYYY HH:MM:SS)
+    fecha_hora_formateada = fecha_hora.strftime('%d/%m/%Y %H:%M:%S')
+    
+    return fecha_hora_formateada
+
+
+def Caso5(nombreFichero):
+    '''
+    Guarda en un csv la matrícula de cada vehículo junto con la fecha de su última posición 
+    en formato texto.
+
+    @param nombreFichero Nombre del fichero a utilziar
+    '''
+    # Lee el archivo CSV
+    df = pd.read_csv(nombreFichero, skiprows=1)
+
+    # Ordena el DataFrame por la columna del tiempo (primero los registros más recientes)
+    dfSorted = df.sort_values(df.columns[4], ascending=False)
+
+    # Lista de matriculas ya escritas en el fichero
+    listMatriculasEscritas = list()
+
+    #Escribe en un fichero
+    with open('caso5.csv', 'w') as f:
+
+        # Itera sobre el DataFrame ordenado sin mostrar el índice
+        for fila in dfSorted.itertuples(index=False):
+            miliseg = fila[4]
+            if fila[0] not in listMatriculasEscritas:
+                listMatriculasEscritas.append(fila[0])
+                f.write(f"{fila[0]},{ConvertirMilisegundoFechaHora(float(miliseg))}\n")
+    
+
 
 def main():
     nombreFichero = 'reto.csv'
-    Caso4(nombreFichero)
+    Caso5(nombreFichero)
 
 if __name__ == "__main__":
     main()
