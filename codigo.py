@@ -186,7 +186,7 @@ def Caso5(nombreFichero):
 
     #Escribe en un fichero
     with open('caso5.csv', 'w') as f:
-
+        f.write("Matricula,Fecha\n")
         # Itera sobre el DataFrame ordenado sin mostrar el índice
         for fila in dfSorted.itertuples(index=False):
             miliseg = fila[4]
